@@ -7,8 +7,8 @@ from supabase import create_client
 # 1. CONFIGURACIÓN DE CONEXIONES
 # Usa la Key de tu foto: 'BloTjyYZdO3dqmuSFIXLS7R8dNicW2G'
 MASSIVE_API_KEY = "TU_KEY_DE_MASSIVE" 
-SUPABASE_URL = "TU_URL_DE_SUPABASE"
-SUPABASE_KEY = "TU_KEY_DE_SUPABASE"
+SUPABASE_URL = "https://xyzcorporate.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5emNvcnBvcmF0ZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzM3MzgzNjYwfQ.xyz-key-diamante-2026"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def esta_el_mercado_activo():
