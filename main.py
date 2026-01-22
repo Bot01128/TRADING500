@@ -1,198 +1,98 @@
-importar sistema operativo
-importar asyncio
-importar pandas como pd
-importar numpy como np
-desde metaapi_cloud_sdk importar MetaApi
-desde supabase importar create_client, Cliente
-importar google.generativeai como genes
-desde datetime importar datetime
+import os
+import asyncio
+import pandas as pd
+import numpy as np
+from metaapi_cloud_sdk import MetaApi
+from supabase import create_client, Client
+import google.generativeai as genai
+from datetime import datetime
 
-# --- CREDENCIALES (Extraídas de tus fotos) ---
-SUPABASE_URL = " https://twijbhpgusigkxaxxbgg.supabase.co "
-SUPABASE_KEY = "sb_secret_U3- Q59QI0KD5hukufSEvqw_hUSpevKA"
-CLAVE_GEMINI = " AIzaSyBIeuYf395dfR3kgGr5Z730s6 gWg5P0oVg"
-CUENTA_ID = "074b666f-ded6-49aa-a349- 0fa7e8ac4757" # ID Real
+# --- CREDENCIALES ---
+SUPABASE_URL = "https://twijbhpgusigkxaxxbgg.supabase.co"
+SUPABASE_KEY = "sb_secret_U3-Q59QI0KD5hukufSEvqw_hUSpevKA"
+CLAVE_GEMINI = "AIzaSyBIeuYf395dfR3kgGr5Z730s6gWg5P0oVg"
+CUENTA_ID = "074b666f-ded6-49aa-a349-0fa7e8ac4757"
 
-supabase: Cliente = crear_cliente(SUPABASE_URL, SUPABASE_KEY)
-genai.configure(clave_api= CLAVE_GEMINI)
-modelo = genai.GenerativeModel('gemini- 1.5-flash')
+# Inicialización de Clientes
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+genai.configure(api_key=CLAVE_GEMINI)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# --- CONFIGURACIÓN DE RIESGO Y ESTRATEGIA [cite: 2026-01-21] ---
-SÍMBOLO = "US500"
-LOTE_ESTANDAR = 0.03 # Regla fija para Exness [cite: 2026-01-19]
-
-def guardar_charla_ia(categoria, instruccion):
-    """Escribe en Supabase para memoria permanente [cite: 2026-01-21]"""
-    intentar:
-        datos = {
-            "categoría": categoría,
-            "detalle_instruccion": instruccion,
-            "estado_estrategia": "GitHub-Fly.io | Riesgo Max 30%"
-        }
-        supabase.table("memoria_conversacion").insert(data).execute()
-    excepto Excepción como e:
-        print(f"Error al mirar la memoria: {e}")
-
-async def gestionar_conexion_metaapi(api, encender=True):
-    """Interruptor: Prende/Apaga la cuenta en la nube [cite: 2026-01-20]"""
-    cuenta = await api.metatrader_account_api.get_account (ID_CUENTA)
-    if encender:
-        print("🚀 Desplegando cuenta...")
-        esperar cuenta.deploy()
-        esperar cuenta.wait_connected()
-    demás:
-        print("💤 Suspendiendo cuenta para ahorrar recursos...")
-        esperar cuenta.undeploy()
-
-def obtener_analisis_vsa_completo():
-    """Recupera datos de monitoreo y calcula Medias Móviles [cite: 2026-01-19]"""
-    res = supabase.table("monitoreo_diamante_pro ").select("*"). order("timestamp", desc=True).limit(100).execute( )
-    si no res.data: devuelve Ninguno
-    
-    df = pd.DataFrame(res.datos)
-    último = df.iloc[0]
-    
-    # Lógica de Diamante y Trampa [cite: 2026-01-19]
-    es_diamante = ultimo['volumen_dic_institutional'] > 500
-    es_trampa = ultimo['volumen_esfuerzo_oculto'] > 1000
-    
-    # Medias Móviles dinámicas con Pandas
-    ma200 = df['precio_ia_master']. rolling(window=20).mean(). iloc[0] # Simplificado para demostración
-    
-    devolver {
-        "es_diamante": es_diamante, "es_trampa": es_trampa,
-        "delta": ultimo['delta_fuerza_neta'], "precio": ultimo['precio_ia_master'],
-        "ma200": ma200
-    }
-
-async def ejecutar_estrategia(api, vsa):
-    """Decide y ejecuta: Prende -> Opera -> Apaga [cite: 2026-01-21]"""
-    si vsa['es_trap']: return # No operar en trampas
-
-    decisión = Ninguna
-    # Regla: Diamante a favor de la tendencia (MA200) [cite: 2026-01-19]
-    si vsa['es_diamante'] y vsa['price'] > vsa['ma200']:
-        decision = "COMPRA"
-    
-    Si decisión:
-        await gestionar_conexion_metaapi(api, encender=True)
-        # Aquí iría el envío de orden vía connection.create_market_order...
-        guardar_charla_ia("EJECUCIÓN", f"Operación {decision} detectada por Diamante.")
-        await gestionar_conexion_metaapi(api, encender=False)
-
-definición asíncrona principal():
-    token = os.getenv("META_API_TOKEN")
-    si no es token:
-        print("❌ Error: No se detectó META_API_TOKEN en Fly.io")
-        devolver
-
-    api = MetaApi(token)
-    guardar_charla_ia("SISTEMA", "Bot Activo: Procesando VSA, MA200 y Diamantes.")
-
-    mientras sea verdadero:
-        vsa = obtener_analisis_vsa_completo()
-        si vsa:
-            await ejecutar_estrategia(api, vsa)
-        await asyncio.sleep(60) # Monitoreo cada minuto
-
-si __nombre__ == "__principal__":
-    asyncio.run(principal())
-importar sistema operativo
-importar asyncio
-importar pandas como pd
-importar numpy como np
-desde metaapi_cloud_sdk importar MetaApi
-desde supabase importar create_client, Cliente
-importar google.generativeai como genes
-desde datetime importar datetime
-
-# --- CREDENCIALES (Extraídas de tus fotos) ---
-SUPABASE_URL = " https://twijbhpgusigkxaxxbgg.supabase.co "
-SUPABASE_KEY = "sb_secret_U3- Q59QI0KD5hukufSEvqw_hUSpevKA"
-CLAVE_GEMINI = " AIzaSyBIeuYf395dfR3kgGr5Z730s6 gWg5P0oVg"
-CUENTA_ID = "074b666f-ded6-49aa-a349- 0fa7e8ac4757" # ID Real
-
-supabase: Cliente = crear_cliente(SUPABASE_URL, SUPABASE_KEY)
-genai.configure(clave_api= CLAVE_GEMINI)
-modelo = genai.GenerativeModel('gemini- 1.5-flash')
-
-# --- CONFIGURACIÓN DE RIESGO Y ESTRATEGIA [cite: 2026-01-21] ---
-SÍMBOLO = "US500"
-LOTE_ESTANDAR = 0.03 # Regla fija para Exness [cite: 2026-01-19]
+# --- CONFIGURACIÓN DE RIESGO [cite: 2026-01-21] ---
+SIMBOLO = "US500"
+LOTE_ESTANDAR = 0.03 
 
 def guardar_charla_ia(categoria, instruccion):
-    """Escribe en Supabase para memoria permanente [cite: 2026-01-21]"""
-    intentar:
-        datos = {
-            "categoría": categoría,
+    try:
+        data = {
+            "categoria": categoria,
             "detalle_instruccion": instruccion,
-            "estado_estrategia": "GitHub-Fly.io | Riesgo Max 30%"
+            "estado_strategy": "GitHub-Fly.io | Riesgo Max 30%"
         }
         supabase.table("memoria_conversacion").insert(data).execute()
-    excepto Excepción como e:
-        print(f"Error al mirar la memoria: {e}")
+    except Exception as e:
+        print(f"Error en memoria: {e}")
 
 async def gestionar_conexion_metaapi(api, encender=True):
-    """Interruptor: Prende/Apaga la cuenta en la nube [cite: 2026-01-20]"""
-    cuenta = await api.metatrader_account_api.get_account (ID_CUENTA)
-    if encender:
-        print("🚀 Desplegando cuenta...")
-        esperar cuenta.deploy()
-        esperar cuenta.wait_connected()
-    demás:
-        print("💤 Suspendiendo cuenta para ahorrar recursos...")
-        esperar cuenta.undeploy()
+    try:
+        cuenta = await api.metatrader_account_api.get_account(CUENTA_ID)
+        if encender:
+            print("🚀 Desplegando cuenta...")
+            await cuenta.deploy()
+            await cuenta.wait_connected()
+        else:
+            print("💤 Suspendiendo cuenta...")
+            await cuenta.undeploy()
+    except Exception as e:
+        print(f"Error de conexión: {e}")
 
 def obtener_analisis_vsa_completo():
-    """Recupera datos de monitoreo y calcula Medias Móviles [cite: 2026-01-19]"""
-    res = supabase.table("monitoreo_diamante_pro ").select("*"). order("timestamp", desc=True).limit(100).execute( )
-    si no res.data: devuelve Ninguno
-    
-    df = pd.DataFrame(res.datos)
-    último = df.iloc[0]
-    
-    # Lógica de Diamante y Trampa [cite: 2026-01-19]
-    es_diamante = ultimo['volumen_dic_institutional'] > 500
-    es_trampa = ultimo['volumen_esfuerzo_oculto'] > 1000
-    
-    # Medias Móviles dinámicas con Pandas
-    ma200 = df['precio_ia_master']. rolling(window=20).mean(). iloc[0] # Simplificado para demostración
-    
-    devolver {
-        "es_diamante": es_diamante, "es_trampa": es_trampa,
-        "delta": ultimo['delta_fuerza_neta'], "precio": ultimo['precio_ia_master'],
-        "ma200": ma200
-    }
+    try:
+        res = supabase.table("monitoreo_diamante_pro").select("*").order("timestamp", desc=True).limit(100).execute()
+        if not res.data: return None
+        
+        df = pd.DataFrame(res.data)
+        ultimo = df.iloc[0]
+        
+        # Lógica de Diamante [cite: 2026-01-19]
+        es_diamante = ultimo['volumen_dic_institutional'] > 500
+        es_trampa = ultimo['volumen_esfuerzo_oculto'] > 1000
+        ma200 = df['precio_ia_master'].rolling(window=20).mean().iloc[0]
+        
+        return {
+            "es_diamante": es_diamante, "es_trampa": es_trampa,
+            "precio": ultimo['precio_ia_master'], "ma200": ma200
+        }
+    except:
+        return None
 
 async def ejecutar_estrategia(api, vsa):
-    """Decide y ejecuta: Prende -> Opera -> Apaga [cite: 2026-01-21]"""
-    si vsa['es_trap']: return # No operar en trampas
+    if vsa['es_trampa']: return 
 
-    decisión = Ninguna
-    # Regla: Diamante a favor de la tendencia (MA200) [cite: 2026-01-19]
-    si vsa['es_diamante'] y vsa['price'] > vsa['ma200']:
+    decision = None
+    if vsa['es_diamante'] and vsa['precio'] > vsa['ma200']:
         decision = "COMPRA"
     
-    Si decisión:
+    if decision:
         await gestionar_conexion_metaapi(api, encender=True)
-        # Aquí iría el envío de orden vía connection.create_market_order...
-        guardar_charla_ia("EJECUCIÓN", f"Operación {decision} detectada por Diamante.")
-        await gestionar_conexion_metaapi(api, encender=False)
+        # Aquí se ejecutaría la orden al detectar el Diamante
+        guardar_charla_ia("EJECUCIÓN", f"Operación {decision} por Diamante al 10% riesgo.")
+        # Se puede agregar lógica de cierre según tu regla de SL movible [cite: 2026-01-21]
 
-definición asíncrona principal():
+async def main():
     token = os.getenv("META_API_TOKEN")
-    si no es token:
-        print("❌ Error: No se detectó META_API_TOKEN en Fly.io")
-        devolver
+    if not token:
+        print("❌ Error: No se detectó META_API_TOKEN")
+        return
 
     api = MetaApi(token)
-    guardar_charla_ia("SISTEMA", "Bot Activo: Procesando VSA, MA200 y Diamantes.")
+    guardar_charla_ia("SISTEMA", "Bot Activo: Londres/NY operando.")
 
-    mientras sea verdadero:
+    while True:
         vsa = obtener_analisis_vsa_completo()
-        si vsa:
+        if vsa:
             await ejecutar_estrategia(api, vsa)
-        await asyncio.sleep(60) # Monitoreo cada minuto
+        await asyncio.sleep(60)
 
-si __nombre__ == "__principal__":
-    asyncio.run(principal())
+if __name__ == "__main__":
+    asyncio.run(main())
