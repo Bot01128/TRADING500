@@ -2,7 +2,8 @@ app = "bot-trading-diamante-v1"
 primary_region = "iad"
 
 [build]
-  builder = "heroku/buildpacks:20"
+  builder = "heroku/buildpacks:22"  # Actualizado a la versión 22
 
 [processes]
-  worker = "python main.py"
+  # Cambiamos main.py por bot_diamante_pro.py para activar tu estrategia avanzada
+  worker = "python bot_diamante_pro.py" 
