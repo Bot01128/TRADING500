@@ -3,5 +3,7 @@ pandas
 numpy
 supabase
 python-dotenv
-google-generativeai
+google-generative-ai
 requests
+pytz
+gunicorn
