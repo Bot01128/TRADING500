@@ -6,4 +6,4 @@ python-dotenv
 google-generative-ai
 requests
 pytz
-gunicorn
+gunicorn==21.2.0
